@@ -17,6 +17,7 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 
 public class JwtValidator extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -25,7 +26,7 @@ public class JwtValidator extends OncePerRequestFilter {
         if(jwt!=null){
             jwt = jwt.substring(7);
             try {
-                SecretKey key = Keys.hmacShaKeyFor(fr.pfza.springSecurityFilRouge.config.JwtConst.JWT_SECRET.getBytes());
+                SecretKey key = Keys.hmacShaKeyFor(JwtConst.JWT_SECRET.getBytes());
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()

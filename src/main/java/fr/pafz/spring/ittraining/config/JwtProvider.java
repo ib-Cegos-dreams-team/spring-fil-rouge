@@ -12,7 +12,7 @@ import java.util.Date;
 @Service
 public class JwtProvider {
 
-    private SecretKey key = Keys.hmacShaKeyFor(fr.pfza.springSecurityFilRouge.config.JwtConst.JWT_SECRET.getBytes());
+    private SecretKey key = Keys.hmacShaKeyFor(JwtConst.JWT_SECRET.getBytes());
 
     public String generateToken(Authentication auth){
         String jwt = Jwts.builder()

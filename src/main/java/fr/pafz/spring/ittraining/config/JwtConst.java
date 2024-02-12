@@ -1,4 +1,4 @@
-package fr.pfza.springSecurityFilRouge.config;
+package fr.pafz.spring.ittraining.config;
 
 public class JwtConst {
 

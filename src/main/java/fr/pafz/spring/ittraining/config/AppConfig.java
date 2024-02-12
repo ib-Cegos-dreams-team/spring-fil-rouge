@@ -55,6 +55,8 @@ public class AppConfig {
                 cfg.setAllowedOrigins(Collections.singletonList("*"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
+                cfg.setExposedHeaders(Collections.singletonList("*"));
+                cfg.setMaxAge(3600L);
                 return cfg;
             }
         };
