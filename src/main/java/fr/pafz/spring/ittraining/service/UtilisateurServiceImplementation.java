@@ -36,4 +36,11 @@ public class UtilisateurServiceImplementation implements UtilisateurService {
 
         return user;
     }
+
+    @Override
+    public Utilisateur deleteUserById(Long id) throws Exception {
+        Utilisateur user = findUserById(id);
+        utilisateurRepo.delete(user);
+        return user;
+    }
 }
