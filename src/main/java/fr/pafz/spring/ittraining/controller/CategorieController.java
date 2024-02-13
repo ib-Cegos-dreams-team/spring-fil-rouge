@@ -48,5 +48,9 @@ public class CategorieController {
     public void update(@RequestBody Categorie categorie){
         categorieService.update(categorie);
     }
-    
+
+    @PostMapping("savelist")
+    public void saveList(@RequestBody List<Categorie> categories){categorieService.saveListCategories(categories);}
+
+
 }

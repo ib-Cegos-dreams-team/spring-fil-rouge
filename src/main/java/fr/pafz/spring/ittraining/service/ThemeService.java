@@ -5,6 +5,7 @@ import fr.pafz.spring.ittraining.dto.ThemeReduitDTO;
 import fr.pafz.spring.ittraining.entity.Theme;
 import fr.pafz.spring.ittraining.exception.NotFoundException;
 import fr.pafz.spring.ittraining.repository.ThemeRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +15,14 @@ public class ThemeService {
 
     private final ThemeRepository themeRepository;
 
+    private final JdbcTemplate jdbcTemplate;
+
     // mapper pour faire le lien avec les classes DTO
     private final ObjectMapper objectMapper;
 
-    public ThemeService(ThemeRepository themeRepository, ObjectMapper objectMapper) {
+    public ThemeService(ThemeRepository themeRepository, JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         this.themeRepository = themeRepository;
+        this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
     }
 
@@ -81,4 +85,44 @@ public class ThemeService {
         themeRepository.deleteById(id);
         return theme;
     }
+
+    /**
+     * Methode permettant de remplir la base de donnée avec une liste de themes dans un JSON
+     * Cela permet d'eviter de faire une theme à la fois.
+     * @param themes : la liste des themes à importer dans la base de données
+     */
+    public void saveListThemes(List<Theme> themes){
+        themeRepository.saveAllAndFlush(themes);
+    }
+
+
+
+    /**
+     * methode qui retourne une liste de Themes en fonction de sa catégorie (de l'id catégorie plus précisement)
+     * @param idCategorie
+     * @return Liste de theme reduit DTO
+     */
+    public List<ThemeReduitDTO> findByIdCategorie(Long idCategorie) {
+        String findQuery = "SELECT t.id, t.nom, t.description FROM Theme t " +
+                "INNER JOIN Categorie c ON t.categorie_id = c.id WHERE c.id = ?";
+
+        // Use parameterized query to prevent SQL injection
+        /**
+         * Cette sous methode, avec la lambda expression permet de mapper chaque colonne dans un objet theme.
+         * Cet objet theme est ensuite ajouté à une liste de themes.
+         * et c'est cette liste de theme que la méthode générale envoie
+         * rs : est le ResultSet. lorqu'ion fait des requets JDBC
+         * rs permet de convertir la valeur récupérée en obkjet JAVA, soit en string, en int, en bool...
+         */
+        return jdbcTemplate.query(findQuery, new Object[]{idCategorie}, (rs, rowNum) -> {
+            ThemeReduitDTO theme = new ThemeReduitDTO();
+            theme.setId(rs.getLong("id"));
+            theme.setNom(rs.getNString("nom"));
+            theme.setDescription(rs.getNString("description"));
+            return theme;
+        });
+    }
+
+
+
 }

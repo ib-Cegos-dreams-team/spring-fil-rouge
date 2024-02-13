@@ -89,6 +89,14 @@ public class CategorieService {
         categorieRepository.deleteById(id);
         return categorie;
     }
+    /**
+     * Methode permettant de remplir la base de donnée avec une liste de categories dans un JSON
+     * Cela permet d'eviter de faire une catégorie à la fois.
+     * @param categories : la liste de scatégories à importer dans la base de données
+     */
+    public void saveListCategories(List<Categorie> categories){
+        categorieRepository.saveAllAndFlush(categories);
+    }
 
 
 
