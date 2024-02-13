@@ -1,5 +1,6 @@
 package fr.pafz.spring.ittraining.controller;
 
+import fr.pafz.spring.ittraining.Enum.Role;
 import fr.pafz.spring.ittraining.config.JwtProvider;
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
@@ -57,6 +58,7 @@ public class AuthController {
         createdUser.setPrenom(prenom);
         createdUser.setNom(nom);
         createdUser.setTelephone(telephone);
+        createdUser.setRole(Role.valueOf("UTILISATEUR"));
         Utilisateur savedUser = utilisateurRepo.save(createdUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
