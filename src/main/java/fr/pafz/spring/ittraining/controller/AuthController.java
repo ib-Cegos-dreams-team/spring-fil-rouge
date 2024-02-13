@@ -67,7 +67,7 @@ public class AuthController {
         return new AuthResponse(token, "User registered successfully");
     }
 
-    //login method
+
     @PostMapping("/signin")
     public AuthResponse signInHandler(@RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getEmail();
