@@ -9,4 +9,5 @@ public class FormationReduiteDTO {
     private String nom;
     private String description;
     private float prix;
+    private int duree;
 }

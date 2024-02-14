@@ -2,9 +2,7 @@ package fr.pafz.spring.ittraining.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pafz.spring.ittraining.dto.FormationReduiteDTO;
-import fr.pafz.spring.ittraining.dto.SousThemeReduitDTO;
 import fr.pafz.spring.ittraining.entity.Formation;
-import fr.pafz.spring.ittraining.entity.SousTheme;
 import fr.pafz.spring.ittraining.exception.NotFoundException;
 import fr.pafz.spring.ittraining.repository.FormationRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -114,22 +112,23 @@ public class FormationService {
      * @return Liste de theme reduit DTO
      */
     public List<FormationReduiteDTO> findByIdSousTheme(Long idSousTheme) {
-        String findQuery = "SELECT f.id, f.nom, f.description FROM formation f " +
+        String findQuery = "SELECT f.id, f.nom, f.description, f.duree FROM formation f " +
                 "INNER JOIN sous_theme s ON f.sous_theme_id = s.id WHERE s.id = ?";
 
         // Use parameterized query to prevent SQL injection
-        /**
-         * Cette sous methode, avec la lambda expression permet de mapper chaque colonne dans un objet theme.
-         * Cet objet theme est ensuite ajouté à une liste de themes.
-         * et c'est cette liste de theme que la méthode générale envoie
-         * rs : est le ResultSet. lorqu'ion fait des requets JDBC
-         * rs permet de convertir la valeur récupérée en obkjet JAVA, soit en string, en int, en bool...
-         */
+//        /**
+//         * Cette sous methode, avec la lambda expression permet de mapper chaque colonne dans un objet theme.
+//         * Cet objet theme est ensuite ajouté à une liste de themes.
+//         * et c'est cette liste de theme que la méthode générale envoie
+//         * rs : est le ResultSet. lorqu'ion fait des requets JDBC
+//         * rs permet de convertir la valeur récupérée en obkjet JAVA, soit en string, en int, en bool...
+//         */
         return jdbcTemplate.query(findQuery, new Object[]{idSousTheme}, (rs, rowNum) -> {
             FormationReduiteDTO formationReduiteDTO = new FormationReduiteDTO();
             formationReduiteDTO.setId(rs.getLong("id"));
             formationReduiteDTO.setNom(rs.getNString("nom"));
             formationReduiteDTO.setDescription(rs.getNString("description"));
+            formationReduiteDTO.setDuree(rs.getInt("duree"));
             return formationReduiteDTO;
         });
     }

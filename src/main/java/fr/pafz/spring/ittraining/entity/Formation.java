@@ -30,6 +30,8 @@ public class Formation {
 
     private boolean isInterEntreprise;
 
+    private int duree;
+
     private float prix;
 
     @ManyToOne(cascade = CascadeType.MERGE)
