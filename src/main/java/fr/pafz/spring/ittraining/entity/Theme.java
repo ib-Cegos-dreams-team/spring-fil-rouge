@@ -28,17 +28,17 @@ public class Theme {
     @Size(min=10,max=1000)
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JsonBackReference("theme-categorie")
     private Categorie categorie;
 
 
-    @OneToMany(mappedBy = "theme",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "theme",cascade = {CascadeType.MERGE})
     @JsonManagedReference("theme-formation")
     private List<Formation> formations;
 
 
-    @OneToMany(mappedBy = "theme",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "theme",cascade = {CascadeType.MERGE})
     @JsonManagedReference("theme-soustheme")
     private List<SousTheme> sousThemes;
 

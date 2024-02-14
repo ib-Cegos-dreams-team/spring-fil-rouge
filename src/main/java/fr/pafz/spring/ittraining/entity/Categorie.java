@@ -21,7 +21,6 @@ public class Categorie {
     private Long id;
 
     @NotBlank
-    @Size(min=2,max=20)
     private String nom;
 
 
@@ -29,12 +28,12 @@ public class Categorie {
     private String description;
 
 
-    @OneToMany(mappedBy = "categorie", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "categorie", cascade = {CascadeType.MERGE})
     @JsonManagedReference("theme-categorie")
     private List<Theme> themes;
 
 
-    @OneToMany(mappedBy = "categorie", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "categorie", cascade = {CascadeType.MERGE})
     @JsonManagedReference("categorie-formation")
     private List<Formation> formations;
 

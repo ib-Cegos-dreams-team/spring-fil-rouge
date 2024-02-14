@@ -1,7 +1,9 @@
 package fr.pafz.spring.ittraining.controller;
 
 import fr.pafz.spring.ittraining.dto.FormationReduiteDTO;
+import fr.pafz.spring.ittraining.dto.SousThemeReduitDTO;
 import fr.pafz.spring.ittraining.entity.Formation;
+import fr.pafz.spring.ittraining.entity.SousTheme;
 import fr.pafz.spring.ittraining.service.FormationService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,4 +50,14 @@ public class FormationController {
     public void update(@RequestBody Formation formation){
         formationService.update(formation);
     }
+
+    @GetMapping("/findbysoustheme/{id}")
+    public List<FormationReduiteDTO> findByThemeId(@PathVariable long id){
+        return formationService.findByIdSousTheme(id);
+    }
+
+    @PostMapping("/savelist")
+    public void saveList(@RequestBody List<Formation> formations){formationService.saveListThemes(formations);}
+
+
 }

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,11 +28,11 @@ public class SousTheme {
     @Size(min=10,max=1000)
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JsonBackReference("theme-soustheme")
     private Theme theme;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.MERGE})
     @JsonBackReference("soustheme-formation")
-    private Formation formation;
+    private List<Formation> formation;
 }
