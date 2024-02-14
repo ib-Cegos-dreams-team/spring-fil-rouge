@@ -1,8 +1,11 @@
 package fr.pafz.spring.ittraining.service;
 
+import fr.pafz.spring.ittraining.Enum.Role;
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +40,11 @@ public class UtilisateurCustomService implements UserDetailsService {
             throw new UsernameNotFoundException("Utilisateur non trouvé" + username);
         }
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+        //recuperer le role de l'utilisateur
+        Role role = user.getRole();
+
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role.name());
+
+        return new User(user.getEmail(), user.getPassword(), authorities);
     }
 }
