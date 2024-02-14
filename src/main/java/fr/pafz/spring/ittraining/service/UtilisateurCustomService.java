@@ -1,6 +1,7 @@
 package fr.pafz.spring.ittraining.service;
 
 import fr.pafz.spring.ittraining.Enum.Role;
+import fr.pafz.spring.ittraining.entity.MyUserDetails;
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,6 +46,6 @@ public class UtilisateurCustomService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role.name());
 
-        return new User(user.getEmail(), user.getPassword(), authorities);
+        return new MyUserDetails(user.getEmail(), user.getPassword(), authorities, role);
     }
 }
