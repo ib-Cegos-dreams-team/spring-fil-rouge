@@ -2,6 +2,7 @@ package fr.pafz.spring.ittraining.controller;
 
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.service.UtilisateurService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +45,5 @@ public class UtilisateurController {
     public Utilisateur deleteUserById(@PathVariable Long id) throws Exception {
         return utilisateurService.deleteUserById(id);
     }
-
 
 }

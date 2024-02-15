@@ -1,5 +1,6 @@
 package fr.pafz.spring.ittraining.controller;
 
+import fr.pafz.spring.ittraining.Enum.Role;
 import fr.pafz.spring.ittraining.config.JwtProvider;
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
@@ -12,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -57,6 +55,7 @@ public class AuthController {
         createdUser.setPrenom(prenom);
         createdUser.setNom(nom);
         createdUser.setTelephone(telephone);
+        createdUser.setRole(Role.valueOf("UTILISATEUR"));
         Utilisateur savedUser = utilisateurRepo.save(createdUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
@@ -89,5 +88,16 @@ public class AuthController {
             throw new BadCredentialsException("Wrong password");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    @GetMapping("/utilisateurs")
+    public Iterable<Utilisateur> getAllUtilisateurs() {
+        return utilisateurRepo.findAll();
+    }
+
+    @DeleteMapping("/utilisateurs/{id}")
+    public void deleteUserById(@PathVariable Long id) throws Exception {
+        Utilisateur user = utilisateurRepo.findById(id).orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+        utilisateurRepo.delete(user);
     }
 }

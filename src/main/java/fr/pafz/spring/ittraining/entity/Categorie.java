@@ -24,7 +24,7 @@ public class Categorie {
     private String nom;
 
 
-    @Size(min=10,max=1000)
+
     private String description;
 
 

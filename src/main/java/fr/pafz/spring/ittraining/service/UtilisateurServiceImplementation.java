@@ -3,7 +3,10 @@ package fr.pafz.spring.ittraining.service;
 import fr.pafz.spring.ittraining.config.JwtProvider;
 import fr.pafz.spring.ittraining.entity.Utilisateur;
 import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UtilisateurServiceImplementation implements UtilisateurService {
