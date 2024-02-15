@@ -62,8 +62,9 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
+        String role = savedUser.getRole().toString();
 
-        return new AuthResponse(token, "User registered successfully");
+        return new AuthResponse(token, "User registered successfully", role);
     }
 
 
@@ -71,12 +72,13 @@ public class AuthController {
     public AuthResponse signInHandler(@RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
+        String role = utilisateurRepo.findByEmail(username).getRole().toString();
 
         Authentication authentication = authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
 
-        return new AuthResponse(token, "User signed in successfully");
+        return new AuthResponse(token, "User signed in successfully", role);
     }
 
     private Authentication authenticate(String username, String password) {
