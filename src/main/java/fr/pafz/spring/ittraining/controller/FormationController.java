@@ -56,6 +56,11 @@ public class FormationController {
         return formationService.findByIdSousTheme(id);
     }
 
+    @GetMapping("findbestformations")
+    public List<FormationReduiteDTO> findBestFormations(){
+        return formationService.findBestFormations();
+    }
+
     @PostMapping("/savelist")
     public void saveList(@RequestBody List<Formation> formations){formationService.saveListThemes(formations);}
 
