@@ -56,7 +56,7 @@ public class FormationController {
         return formationService.findByIdSousTheme(id);
     }
 
-    @GetMapping("findbestformations")
+    @GetMapping("/findbestformations")
     public List<FormationReduiteDTO> findBestFormations(){
         return formationService.findBestFormations();
     }
