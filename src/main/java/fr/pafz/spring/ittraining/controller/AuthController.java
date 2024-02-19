@@ -114,9 +114,41 @@ public class AuthController {
         utilisateurRepo.delete(user);
     }
 
-    @PostMapping("/utilisateurs/enregistrer")
-    public Utilisateur saveUser(@RequestBody Utilisateur utilisateur) {
-        return utilisateurRepo.save(utilisateur);
+    @PostMapping("/enregistrer")
+    public ResponseEntity<Utilisateur> createUserFromAdmin(@RequestBody Utilisateur utilisateur) {
+        try {
+            String email = utilisateur.getEmail();
+            String password = utilisateur.getPassword();
+            String prenom = utilisateur.getPrenom();
+            String nom = utilisateur.getNom();
+            String telephone = utilisateur.getTelephone();
+            Role role = utilisateur.getRole();
+
+            // Check for existing email
+            Optional<Utilisateur> isExistEmail = Optional.ofNullable(utilisateurRepo.findByEmail(email));
+            if (isExistEmail.isPresent()) {
+                return ResponseEntity.badRequest().body(null); // Or throw a specific exception
+            }
+
+            // Create and save user
+            Utilisateur createdUser = new Utilisateur();
+            createdUser.setCivilite(utilisateur.getCivilite());
+            createdUser.setEmail(email);
+            createdUser.setPassword(passwordEncoder.encode(password));
+            createdUser.setPrenom(prenom);
+            createdUser.setNom(nom);
+            createdUser.setTelephone(telephone);
+            createdUser.setRole(role);
+            Utilisateur savedUser = utilisateurRepo.save(createdUser);
+
+            Authentication authentication = authenticate(email, password);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = jwtProvider.generateToken(authentication);
+
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
 
