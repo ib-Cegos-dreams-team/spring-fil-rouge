@@ -150,4 +150,20 @@ public class FormationService {
         });
     }
 
+    /**
+     * Methode Temporaire pour notre homepage .
+     * Elle affiches les 3 premièrers formations de notre BDD
+     * On considère ici que ce sont les 3 meilleures formations
+     * @return les 3 meeilleurs formations sous forme de formation reduite DTO
+     */
+    public List<FormationReduiteDTO> findBestFormations(){
+        List<Formation> formations = new ArrayList<>();
+        for (long i = 1; i <= 3; i++) {
+            formations.add(formationRepository.findById(i)
+                    .orElseThrow(()-> new NotFoundException("Formation with id : not found.")));
+        }
+        return formations.stream().map(formation -> objectMapper
+                .convertValue(formation, FormationReduiteDTO.class)).toList();
+    }
+
 }

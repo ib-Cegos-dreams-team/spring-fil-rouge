@@ -7,6 +7,7 @@ import fr.pafz.spring.ittraining.repository.UtilisateurRepository;
 import fr.pafz.spring.ittraining.request.LoginRequest;
 import fr.pafz.spring.ittraining.response.AuthResponse;
 import fr.pafz.spring.ittraining.service.UtilisateurCustomService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,36 +39,41 @@ public class AuthController {
 
     //register method
     @PostMapping("/signup")
-    public AuthResponse createUser(@RequestBody Utilisateur utilisateur) throws Exception {
-        String email = utilisateur.getEmail();
-        String password = utilisateur.getPassword();
-        String prenom = utilisateur.getPrenom();
-        String nom = utilisateur.getNom();
-        String telephone = utilisateur.getTelephone();
+    public ResponseEntity<Utilisateur> createUser(@RequestBody Utilisateur utilisateur) {
+        try {
+            String email = utilisateur.getEmail();
+            String password = utilisateur.getPassword();
+            String prenom = utilisateur.getPrenom();
+            String nom = utilisateur.getNom();
+            String telephone = utilisateur.getTelephone();
 
-        Utilisateur isExistEmail = utilisateurRepo.findByEmail(email);
-        if (isExistEmail != null) {
-            throw new Exception("Email already exists");
+            // Check for existing email
+            Optional<Utilisateur> isExistEmail = Optional.ofNullable(utilisateurRepo.findByEmail(email));
+            if (isExistEmail.isPresent()) {
+                return ResponseEntity.badRequest().body(null); // Or throw a specific exception
+            }
+
+            // Create and save user
+            Utilisateur createdUser = new Utilisateur();
+            createdUser.setCivilite(utilisateur.getCivilite());
+            createdUser.setEmail(email);
+            createdUser.setPassword(passwordEncoder.encode(password));
+            createdUser.setPrenom(prenom);
+            createdUser.setNom(nom);
+            createdUser.setTelephone(telephone);
+            createdUser.setRole(Role.valueOf("UTILISATEUR"));
+            Utilisateur savedUser = utilisateurRepo.save(createdUser);
+
+            Authentication authentication = authenticate(email, password);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = jwtProvider.generateToken(authentication);
+
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
         }
-
-        Utilisateur createdUser = new Utilisateur();
-        createdUser.setCivilite(utilisateur.getCivilite());
-        createdUser.setEmail(email);
-        createdUser.setPassword(passwordEncoder.encode(password));
-        createdUser.setPrenom(prenom);
-        createdUser.setNom(nom);
-        createdUser.setTelephone(telephone);
-        createdUser.setRole(Role.valueOf("UTILISATEUR"));
-        Utilisateur savedUser = utilisateurRepo.save(createdUser);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generateToken(authentication);
-        String role = savedUser.getRole().toString();
-
-        return new AuthResponse(token, "User registered successfully", role);
     }
+
 
 
     @PostMapping("/signin")
@@ -100,6 +108,16 @@ public class AuthController {
     @DeleteMapping("/utilisateurs/{id}")
     public void deleteUserById(@PathVariable Long id) throws Exception {
         Utilisateur user = utilisateurRepo.findById(id).orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+        if(user.getRole() == Role.ADMIN){
+            throw new Exception("Vous ne pouvez pas supprimer un admin");
+        }
         utilisateurRepo.delete(user);
     }
+
+    @PostMapping("/utilisateurs/enregistrer")
+    public Utilisateur saveUser(@RequestBody Utilisateur utilisateur) {
+        return utilisateurRepo.save(utilisateur);
+    }
+
+
 }
